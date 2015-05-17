@@ -56,6 +56,9 @@ class musicGenerator {
     }
     
 	
+	/*
+	 * Sets up conditions to generate unique music: random transposition, instrument set, chord sequence
+	 */
 	public function setupMusicGenerator () {
 		# Set up Generator and HarmonyLogic
 		$this->midiGenerator = new midiGenerator;
@@ -84,6 +87,9 @@ class musicGenerator {
 	}
 	
 	
+	/*
+	 * Downloads video, sets filepaths and analyses video
+	 */
 	private function setupVideoData () {
 		# Download and analyse video
 		$this->videoDownloader = new videoDownloader;
@@ -114,6 +120,9 @@ class musicGenerator {
 	}
 	
 	
+	/*
+	 * Writes MIDI tracks for each instrument
+	 */
 	public function writeMIDITracks () {
 		# Set trackstart
 		$timeStamp = 0;
@@ -162,6 +171,10 @@ class musicGenerator {
 		$this->midiGenerator->generateMIDIHarmony ($settingsArray);
 	}
 	
+	
+	/*
+	 * Converts MIDI to WAV, converges audio and video files, displays in browser
+	 */
 	public function processAudioAndVideo () {
 		# Get file, convert to WAV and output HTML5
 		$audioFileLocation = $this->processMIDItoWAV();
@@ -182,6 +195,11 @@ class musicGenerator {
 	}
 	
 	
+	/*
+	 * Convert MIDI file to WAV
+	 *
+	 * @return str Path to converted WAV file
+	 */
 	private function processMIDItoWAV () {
 		# Get complete file location from MIDI Generator
 		$file = $this->midiGenerator->getMIDIFile ();
@@ -194,11 +212,15 @@ class musicGenerator {
 		# Convert MIDI file to WAV
 		$this->convertMIDIToWAV ($file);
 		
-		# Echo HTML5 tag with converted WAV file
+		# Return location of generated WAV file
 		$location = '/musicgen/output/' . pathinfo ($file, PATHINFO_FILENAME) . '.wav';
 		return $location;	
 	}
 	
+	
+	/*
+	 * Assigns form data to variables
+	 */
 	private function assignFormData ($formData) {
 		# Get style choice identifier key
         $this->musicStyleKey = $this->getMusicStyleKey($formData['Music Style']);
@@ -211,6 +233,9 @@ class musicGenerator {
 	}
 	
 	
+	/*
+	 * Generates and processes an input form
+	 */
 	public function generateForm () {
         # Load the form module 
         require_once ('./lib/ultimateform/ultimateForm.php');
@@ -274,7 +299,11 @@ class musicGenerator {
 		return $result;
     }
 	
-	
+	/*
+	 * Gets style identifier key for selected musical style
+	 *
+	 * @return int Style choice key
+	 */
     public function getMusicStyleKey ($styleChoice) {
         $styleChoiceKey = array_search ($styleChoice, $this->musicStyles);
         
