@@ -7,6 +7,7 @@ class musicGenerator {
 	public $videoID;
 	public $instrumentArray;
 	public $sequenceOfHarmony;
+	public $soundtrackOnly;
 	
     public function __construct () {
         include_once './classes/chordSequences.class.php';
@@ -45,7 +46,9 @@ class musicGenerator {
 			$this->setupMusicGenerator();
 			
 			# Setup video data
+			if ($this->soundtrackOnly === false) {
 			$this->setupVideoData();
+			}
 			
 			# Write tracks
 			$this->writeMIDITracks();
@@ -178,7 +181,11 @@ class musicGenerator {
 	public function processAudioAndVideo () {
 		# Get file, convert to WAV and output HTML5
 		$audioFileLocation = $this->processMIDItoWAV();
-		#echo $this->getAudioHTMLTag ($audioFileLocation);
+		
+		if ($this->soundtrackOnly === true) {
+			echo $this->getAudioHTMLTag ($audioFileLocation);
+			return;
+		}
 		
 		# Merge audio and video
 		$pathToMusicFile = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/' . pathinfo ($audioFileLocation, PATHINFO_FILENAME) . '.wav';
@@ -230,6 +237,19 @@ class musicGenerator {
 		
 		# Assign video ID
 		$this->videoID = $formData['url'];
+		
+		# Check if only soundtrack generation
+		$this->soundtrackOnly = ($formData['radiobuttons'] === 'Generate soundtrack file only' ? true : false);
+		
+		if ($this->soundtrackOnly === true) {
+			if (isSet($formData['verses'])) {
+				$this->numberOfVerses = $formData['verses'];
+			} else {
+				# Set default length
+				$this->numberOfVerses = 4;
+			}
+		}
+		
 	}
 	
 	
@@ -254,20 +274,17 @@ class musicGenerator {
         
         $form->heading (2, 'Generative Soundtrack Creation');
         $form->heading ('p', 'Please complete the form below');
-        
-        # Create a standard input box
-        /*
-		$form->input (array (
-        'name'					=> 'Length',
-        'title'					=> 'Duration of track (in number of repeated verses)',
-        'description'			=> '',
-        'output'				=> array (),
-        'size'					=> 32,
-        'maxlength'				=> '',
-        'default'				=> '4',
-        'regexp'				=> '',
-        ));
-        */
+		
+		# A set of radio buttons
+		$form->radiobuttons (array (
+		'name'					=> 'radiobuttons',
+		'values'			    => array ('Generate video with soundtrack', 'Generate soundtrack file only',),
+		'title'					=> 'Generation options',
+		'description'			=> '',
+		'output'				=> array (),
+		'required'				=> true,
+		'default'				=> 'Generate soundtrack file only',
+		));
 		
         # Create a standard input box
         $form->input (array (
@@ -291,6 +308,18 @@ class musicGenerator {
         'size'					=> 32,
         'maxlength'				=> '',
         'default'				=> 'Generic YouTube',
+        'regexp'				=> '',
+        ));
+		
+		 # Create a standard input box
+		$form->input (array (
+        'name'					=> 'verses',
+        'title'					=> 'Number of verses',
+        'description'			=> 'Not used if a YouTube URL is given',
+        'output'				=> array (),
+        'size'					=> 32,
+        'maxlength'				=> '',
+        'default'				=> '4',
         'regexp'				=> '',
         ));
         
