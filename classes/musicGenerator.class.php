@@ -8,6 +8,7 @@ class musicGenerator {
 	public $instrumentArray;
 	public $sequenceOfHarmony;
 	public $soundtrackOnly;
+	public $midiTimeStamp;
 	
     public function __construct () {
         include_once './classes/chordSequences.class.php';
@@ -42,16 +43,23 @@ class musicGenerator {
 			# Assign form data
 			$this->assignFormData($formData);
 			
-			# Setup music generator
-			$this->setupMusicGenerator();
+			$this->midiTimeStamp = 0;
+			for ($cycles = 1; $cycles <= 2; $cycles++) {
+				# Setup music generator
+				$this->setupMusicGenerator();
 			
-			# Setup video data
-			if ($this->soundtrackOnly === false) {
-			$this->setupVideoData();
+				# Setup video data
+				if ($this->soundtrackOnly === false) {
+				$this->setupVideoData();
+				}
+			
+				# Write tracks
+				$this->writeMIDITracks();
+				
+				# Advance timestamp
+				$this->midiTimeStamp = 60000;
 			}
 			
-			# Write tracks
-			$this->writeMIDITracks();
 			
 			# Join audio and video
 			$this->processAudioAndVideo();
@@ -128,11 +136,11 @@ class musicGenerator {
 	 */
 	public function writeMIDITracks () {
 		# Set trackstart
-		$timeStamp = 0;
+		$timeStamp = $this->midiTimeStamp;
 			
 		# Set defaults common to all tracks
 		$settingsArray = array();
-		$settingsArray['startTimeStamp'] = 1000;
+		$settingsArray['startTimeStamp'] = $timeStamp;
 		$settingsArray['chordArray'] = $this->sequenceOfHarmony;
 		$settingsArray['chordLengthMS'] = 2000;
 		$settingsArray['timesRepeated'] = $this->numberOfVerses;
@@ -172,6 +180,9 @@ class musicGenerator {
 		$settingsArray['instrumentID'] = 1; // Chanel 10 is percussion, program 1 is default basic drum kit
 		$this->midiGenerator->globalTranspose = 0;
 		$this->midiGenerator->generateMIDIHarmony ($settingsArray);
+		
+		unset ($settingsArray);
+		return;
 	}
 	
 	
@@ -264,7 +275,6 @@ class musicGenerator {
         
         # Create a form instance 
         $form = new form (array (
-            'get'                    => 'true',
             'div'                    => 'form-download',
             'submitButtonText'       => 'Generate Music',
 			'formCompleteText'       => false,
@@ -278,7 +288,7 @@ class musicGenerator {
 		# A set of radio buttons
 		$form->radiobuttons (array (
 		'name'					=> 'radiobuttons',
-		'values'			    => array ('Generate video with soundtrack', 'Generate soundtrack file only',),
+		'values'			    => array ('Generate soundtrack file only', 'Generate video with soundtrack',),
 		'title'					=> 'Generation options',
 		'description'			=> '',
 		'output'				=> array (),
@@ -287,19 +297,6 @@ class musicGenerator {
 		));
 		
         # Create a standard input box
-        $form->input (array (
-        'name'					=> 'url',
-        'title'					=> 'YouTube URL',
-        'description'			=> '',
-        'output'				=> array (),
-        'size'					=> 32,
-        'maxlength'				=> '',
-        'default'				=> 'P6JfInyQI9Q',
-        'regexp'				=> '',
-        ));
-        
-		
-		# Create a standard input box
         $form->input (array (
         'name'					=> 'Music Style',
         'title'					=> 'Style of soundtrack music',
@@ -311,11 +308,23 @@ class musicGenerator {
         'regexp'				=> '',
         ));
 		
+		# Create a standard input box
+        $form->input (array (
+        'name'					=> 'url',
+        'title'					=> 'YouTube URL',
+        'description'			=> 'Not used if Generate soundtrack option selected',
+        'output'				=> array (),
+        'size'					=> 32,
+        'maxlength'				=> '',
+        'default'				=> 'P6JfInyQI9Q',
+        'regexp'				=> '',
+        ));
+		
 		 # Create a standard input box
 		$form->input (array (
         'name'					=> 'verses',
         'title'					=> 'Number of verses',
-        'description'			=> 'Not used if a YouTube URL is given',
+        'description'			=> 'Not used if Generate video option selected',
         'output'				=> array (),
         'size'					=> 32,
         'maxlength'				=> '',
