@@ -120,10 +120,27 @@ class videoTools {
 	 */
 	public function getVideoDuration () {
 		$cmd = "ffmpeg -i {$this->videoFilepath} 2>&1 | grep Duration | awk '{print $2}' | tr -d ,";
-		
-		$output = shell_exec ($cmd);
-
+		#echo $cmd;die;
+		$output = $this->shellExec ($cmd);
 		return $output;	
+	}
+	
+	
+	/*
+	 * Executes a command and returns an exit status
+	 *
+	 * @param str $cmd The command
+	 *
+	 * @return bool The exit status
+	 */
+	private function shellExec ($cmd) {
+		if (substr(php_uname(), 0, 5) == "Linux"){ 
+			$output = shell_exec ($cmd);
+		} else { 
+			$cmd = '/usr/local/bin/' . $cmd;
+			$output = shell_exec ($cmd);
+		}		
+		return $output;
 	}
 	
 	

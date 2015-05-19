@@ -43,23 +43,16 @@ class musicGenerator {
 			# Assign form data
 			$this->assignFormData($formData);
 			
-			$this->midiTimeStamp = 0;
-			for ($cycles = 1; $cycles <= 2; $cycles++) {
-				# Setup music generator
-				$this->setupMusicGenerator();
-			
-				# Setup video data
-				if ($this->soundtrackOnly === false) {
-				$this->setupVideoData();
-				}
-			
-				# Write tracks
-				$this->writeMIDITracks();
-				
-				# Advance timestamp
-				$this->midiTimeStamp = 60000;
+			# Setup music generator
+			$this->setupMusicGenerator();
+		
+			# Setup video data
+			if ($this->soundtrackOnly === false) {
+			$this->setupVideoData();
 			}
-			
+		
+			# Write tracks
+			$this->writeMIDITracks();	
 			
 			# Join audio and video
 			$this->processAudioAndVideo();
@@ -123,7 +116,6 @@ class musicGenerator {
 		
 		$videoDuration = ($this->videoTools->getVideoDuration()); // 00:01:43.14
 		$videoDuration = explode ('.', $videoDuration);
-		
 		# Calculate duration in number of seconds
 		$minutes = explode (':', $videoDuration[0]);
 		$seconds = ($minutes[0] * 3600) + ($minutes[1] * 60) + $minutes[2];
