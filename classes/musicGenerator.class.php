@@ -363,9 +363,9 @@ class musicGenerator {
      */ 
     public function convertMIDIToWAV ($file) {
         # Convert MIDI file to WAV using timidity in shell
-        $cmd = "/usr/local/bin/timidity -Ow \"{$file}\"";   
+        $cmd = "timidity -Ow \"{$file}\"";   
         #echo $cmd;
-        exec ($cmd, $output, $exitStatus);
+        $exitStatus = $this->execCmd($cmd);
         if ($exitStatus != 0) {
             #echo nl2br (htmlspecialchars (implode ("\n", $output)));
             echo "\n<p><pre>The WAV file could not be created, due to an error with the converter.</pre></p>";  
@@ -390,6 +390,23 @@ class musicGenerator {
                 </audio>";    
         return $html;
     }
+	
+	/*
+	 * Executes a command and returns an exit status
+	 *
+	 * @param str $cmd The command
+	 *
+	 * @return bool The exit status
+	 */
+	private function execCmd ($cmd) {
+		if (substr(php_uname(), 0, 5) == "Linux"){ 
+			exec ($cmd, $output, $exitStatus);
+		} else { 
+        $cmd = '/usr/local/bin/' . $cmd;
+        exec ($cmd, $output, $exitStatus);   
+		}		
+		return $exitStatus;
+	}
     
 }
 
