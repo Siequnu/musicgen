@@ -96,7 +96,7 @@ class videoTools {
 	 */
     public function getCutScenes () {
 		# Define command to be run		
-		$cmd = "/usr/local/bin/ffprobe -show_frames -of compact=p=0 -f lavfi \"movie={$this->videoFilepath},select=gt(scene\,0.3)\" > {$this->outputDirectory}scene-changes.txt"; 
+		$cmd = "ffprobe -show_frames -of compact=p=0 -f lavfi \"movie={$this->videoFilepath},select=gt(scene\,0.3)\" > {$this->outputDirectory}scene-changes.txt"; 
 
 		# Execute command
         $exitStatus = $this->execCmd ($cmd);
@@ -119,7 +119,7 @@ class videoTools {
 	 * @return str Duration (eg. 00:01:43.24)
 	 */
 	public function getVideoDuration () {
-		$cmd = "/usr/local/bin/ffmpeg -i {$this->videoFilepath} 2>&1 | grep Duration | awk '{print $2}' | tr -d ,";
+		$cmd = "ffmpeg -i {$this->videoFilepath} 2>&1 | grep Duration | awk '{print $2}' | tr -d ,";
 		
 		$output = shell_exec ($cmd);
 
@@ -183,7 +183,7 @@ class videoTools {
 	 */
 	public function mergeAudioWithVideo () {
 		# Define command
-        $cmd = "/usr/local/bin/ffmpeg -y -i \"{$this->audioFilepath}\" -i \"{$this->videoFilepath}\" -preset ultrafast \"{$this->outputFilepath}\"";
+        $cmd = "ffmpeg -y -i \"{$this->audioFilepath}\" -i \"{$this->videoFilepath}\" -preset ultrafast \"{$this->outputFilepath}\"";
 
 		# Execute command
 		$exitStatus = $this->execCmd ($cmd);
@@ -208,7 +208,7 @@ class videoTools {
     public function convertMIDIToWAV ($midiFilepath) {
         # Convert MIDI file to WAV using timidity in shell
         # Define command
-		$cmd = "/usr/local/bin/timidity -Ow \"{$midiFilepath}\"";   
+		$cmd = "timidity -Ow \"{$midiFilepath}\"";   
         
 		# Execute command
 		$exitStatus = $this->execCmd ($cmd);
@@ -255,13 +255,15 @@ class videoTools {
 	 * @return bool The exit status
 	 */
 	private function execCmd ($cmd) {
-		if (substr(php_uname(), 0, 7) == "Windows"){ 
-			pclose(popen("start /B ". $cmd, "r"));  
+		if (substr(php_uname(), 0, 5) == "Linux"){ 
+			exec ($cmd, $output, $exitStatus);
 		} else { 
+        $cmd = '/usr/local/bin/' . $cmd;
         exec ($cmd, $output, $exitStatus);   
 		}		
 		return $exitStatus;
 	}
+	
 	
 }
 
