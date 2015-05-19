@@ -14,10 +14,7 @@ class midiGenerator {
 	public function __construct () {
 		# Add Midi Header
 		$this->midiInstructions = array ();
-		$this->midiInstructions[] = 'MFile 0 1 650';
-		
-		# Set default start time
-		$this->midiTimeStamp = 0;
+		$this->midiInstructions[] = 'MFile 0 1 650';	
 	}
 	
 	
