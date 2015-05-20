@@ -200,7 +200,7 @@ class videoTools {
 	 */
 	public function mergeAudioWithVideo () {
 		# Define command
-        $cmd = "ffmpeg -y -i \"{$this->audioFilepath}\" -i \"{$this->videoFilepath}\" -preset ultrafast \"{$this->outputFilepath}\"";
+        $cmd = "ffmpeg -y -i \"{$this->audioFilepath}\" -i \"{$this->videoFilepath}\" -preset ultrafast -strict experimental \"{$this->outputFilepath}\"";
 
 		# Execute command
 		$exitStatus = $this->execCmd ($cmd);
