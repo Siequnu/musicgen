@@ -201,7 +201,8 @@ class musicGenerator {
 		} else {
 			# Echo HTML5 tag with video file
 			$pathToVideoFile = './output/' . $this->videoID . '-finalvideo.mp4';
-			echo $this->videoTools->getVideoHTMLTag ($pathToVideoFile);	
+			echo $this->videoTools->getVideoHTMLTag ($pathToVideoFile);
+
 		}
 	}
 	
@@ -236,7 +237,7 @@ class musicGenerator {
 		# Get style choice identifier key
         $this->musicStyleKey = $this->getMusicStyleKey($formData['Music Style']);
         if ($this->musicStyleKey === false) {
-			echo "Music could not be generated, due to the following error: <pre>".htmlspecialchars($this->getErrorMessage())."</pre></p>";   
+			echo "Music could not be generated in the chosen style, due to the following error: <pre>".htmlspecialchars($this->getErrorMessage())."</pre></p>";   
 		};
 		
 		# Assign video ID
@@ -276,21 +277,24 @@ class musicGenerator {
         ));
         
         $form->heading (2, 'Generative Soundtrack Creation');
-        $form->heading ('p', 'Please complete the form below');
+        $form->heading ('p', 'This script will generate a unique soundtrack that can optionally be merged with a video. Processing lengthy videos might take some time.');
+		$form->heading ('p', '');
+
 		
 		# A set of radio buttons
 		$form->radiobuttons (array (
 		'name'					=> 'radiobuttons',
-		'values'			    => array ('Generate soundtrack file only', 'Generate video with soundtrack',),
+		'values'			    => array ('Generate soundtrack audio only', 'Generate video with soundtrack',),
 		'title'					=> 'Generation options',
 		'description'			=> '',
 		'output'				=> array (),
 		'required'				=> true,
-		'default'				=> 'Generate soundtrack file only',
+		'default'				=> 'Generate soundtrack audio only',
 		));
 		
         # Create a standard input box
-        $form->input (array (
+        /*
+		$form->input (array (
         'name'					=> 'Music Style',
         'title'					=> 'Style of soundtrack music',
         'description'			=> '',
@@ -300,16 +304,17 @@ class musicGenerator {
         'default'				=> 'Generic YouTube',
         'regexp'				=> '',
         ));
+        */
 		
 		# Create a standard input box
         $form->input (array (
         'name'					=> 'url',
         'title'					=> 'YouTube URL',
-        'description'			=> 'Not used if Generate soundtrack option selected',
+        'description'			=> 'Used if Generate video with soundtrack is selected',
         'output'				=> array (),
         'size'					=> 32,
         'maxlength'				=> '',
-        'default'				=> 'P6JfInyQI9Q',
+        'default'				=> 'l6MY4iQFvUo',
         'regexp'				=> '',
         ));
 		
@@ -317,7 +322,7 @@ class musicGenerator {
 		$form->input (array (
         'name'					=> 'verses',
         'title'					=> 'Number of verses',
-        'description'			=> 'Not used if Generate video option selected',
+        'description'			=> 'Used if Generate soundtrack audio file only is selected.',
         'output'				=> array (),
         'size'					=> 32,
         'maxlength'				=> '',
@@ -380,7 +385,8 @@ class musicGenerator {
         
         $html = "<audio src=\"{$location}\" controls=\"controls\">
                 Your browser does not support the AUDIO element
-                </audio>";    
+                </audio>
+				<p>Refresh the page to create a different song.</p>";    
         return $html;
     }
 	

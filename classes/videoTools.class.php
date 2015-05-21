@@ -85,7 +85,8 @@ class videoTools {
     public function getVideoHTMLTag ($location) {
         $html = "<video src=\"{$location}\" width=600 controls=\"controls\">
                 Your browser does not support the VIDEO element
-                </video>";    
+                </video>
+				<p>Refresh the page to generate a different soundtrack.";    
         return $html;
     }
     
