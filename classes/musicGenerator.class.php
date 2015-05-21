@@ -234,9 +234,11 @@ class musicGenerator {
 	 * Assigns form data to variables
 	 */
 	private function assignFormData ($formData) {
+		
 		# Get style choice identifier key
-        $this->musicStyleKey = $this->getMusicStyleKey($formData['Music Style']);
-        if ($this->musicStyleKey === false) {
+        #$this->musicStyleKey = $this->getMusicStyleKey($formData['Music Style']);
+        $this->musicStyleKey = $this->getMusicStyleKey('Generic YouTube');
+		if ($this->musicStyleKey === false) {
 			echo "Music could not be generated in the chosen style, due to the following error: <pre>".htmlspecialchars($this->getErrorMessage())."</pre></p>";   
 		};
 		
@@ -244,7 +246,7 @@ class musicGenerator {
 		$this->videoID = $formData['url'];
 		
 		# Check if only soundtrack generation
-		$this->soundtrackOnly = ($formData['radiobuttons'] === 'Generate soundtrack file only' ? true : false);
+		$this->soundtrackOnly = ($formData['radiobuttons'] === 'Generate soundtrack audio only' ? true : false);
 		
 		if ($this->soundtrackOnly === true) {
 			if (isSet($formData['verses'])) {
