@@ -44,7 +44,7 @@ class videoDownloader {
 		}
 		
 		# Set local filepath for curl
-		$file_target = 'output/video.mp4';
+		$file_target = 'content/video.mp4';
 		
 		# Download file
 		$cmd = "curl -L -o {$file_target} '{$url}'";
