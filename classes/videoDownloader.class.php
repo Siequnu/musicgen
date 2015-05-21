@@ -15,12 +15,13 @@ class videoDownloader {
     
 	
     public function main ($videoID) {        
-        # Set input video location
-        $this->inputVideoLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/content/video.mp4';
-
+       
 		# Assign passed on data (video ID)
 		$this->videoID = $videoID;
-				
+	   
+	    # Set input video location
+        $this->inputVideoLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/content/' . $this->videoID . '-video.mp4';
+		
 		# Build URL and path to target video file
 		$url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/lib/getvideo/getvideo.php?videoid=' . $this->videoID . '&format=18';	
 		$filetarget = dirname ($_SERVER['SCRIPT_FILENAME']) . '/content/';
@@ -44,7 +45,7 @@ class videoDownloader {
 		}
 		
 		# Set local filepath for curl
-		$file_target = 'content/video.mp4';
+		$file_target = 'content/' . $this->videoID . '-video.mp4';
 		
 		# Download file
 		$cmd = "curl -L -o {$file_target} '{$url}'";

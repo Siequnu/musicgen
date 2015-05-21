@@ -7,6 +7,7 @@ class videoTools {
 	public $audioFilepath;
 	public $outputDirectory;
 	public $outputFilepath;
+	public $videoID;
 	
 			
     public function __construct() {
@@ -23,7 +24,7 @@ class videoTools {
 	public function setDefaultPaths ($inputVideoLocation) {
 		
 		$outputFolder = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/';
-		$outputFilepath = $outputFolder . 'finalvideo.mp4';
+		$outputFilepath = $outputFolder . $this->videoID . '-finalvideo.mp4';
 		
 		# Set path to original video file
 		if (!$this->setVideoFilepath ($inputVideoLocation)) {
@@ -96,19 +97,24 @@ class videoTools {
 	 */
     public function getCutScenes () {
 		# Define command to be run		
-		$cmd = "ffprobe -show_frames -of compact=p=0 -f lavfi \"movie={$this->videoFilepath},select=gt(scene\,0.3)\" > {$this->outputDirectory}scene-changes.txt"; 
+		$cmd = "ffprobe -show_frames -of compact=p=0 -f lavfi \"movie={$this->videoFilepath},select=gt(scene\,0.3)\" > {$this->outputDirectory}{$this->videoID}-scene-changes.txt"; 
 
-		# Execute command
-        $exitStatus = $this->execCmd ($cmd);
+		$exitStatus = $this->execCmd ($cmd);
 	
 		# Handle errors
 		if ($exitStatus != 0) {
-            $this->errorMessage = 'The cut scenes could not be extracted due to an error with ffprobe.';  
-            return false;
+            # Try local version of ffprobe in folder
+            $exitStatus = $this->execLocalCMD ($cmd);
         }
 		
+		# Deal with error messages
+		if ($exitStatus != 0) {
+            $this->errorMessage = 'The video file could not be rendered, due to an error with ffmpeg.';
+            return false;
+        }
+				
 		# Parse and return cut scene file
-		$sceneChangeFileLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/scene-changes.txt';
+		$sceneChangeFileLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/' . $this->videoID . '-scene-changes.txt';
 		return $this->parseCutSceneFile($sceneChangeFileLocation);
 		
 	}
@@ -122,16 +128,38 @@ class videoTools {
 		$cmd = "ffmpeg -i {$this->videoFilepath} 2>&1 | grep Duration | awk '{print $2}' | tr -d ,";
 		#echo $cmd;die;
 		$output = $this->shellExec ($cmd);
+		if (!$output) {
+			$output = $this->shellExecLocal($cmd);
+		}
 		return $output;	
 	}
 	
 	
 	/*
-	 * Executes a command and returns an exit status
+	 * Executes a command and returns output
 	 *
 	 * @param str $cmd The command
 	 *
-	 * @return bool The exit status
+	 * @return str The result of the program
+	 */
+	private function shellExecLocal ($cmd) {
+		
+		# Check if local binaries of ffmpeg and ffprobe are present
+		$ffmpegLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/ffmpeg';
+		if (file_exists($ffmpegLocation)) {
+			$cmd = './' . $cmd;
+			$output = shell_exec ($cmd);
+		}
+		return $output;
+	}
+	
+	
+	/*
+	 * Executes a command and returns output
+	 *
+	 * @param str $cmd The command
+	 *
+	 * @return str The result of the program
 	 */
 	private function shellExec ($cmd) {
 		if (substr(php_uname(), 0, 5) == "Linux"){ 
@@ -202,8 +230,13 @@ class videoTools {
 		# Define command
         $cmd = "ffmpeg -y -i \"{$this->audioFilepath}\" -i \"{$this->videoFilepath}\" -preset ultrafast -strict experimental \"{$this->outputFilepath}\"";
 
-		# Execute command
 		$exitStatus = $this->execCmd ($cmd);
+	
+		# Handle errors
+		if ($exitStatus != 0) {
+            # Try local version of ffprobe in folder
+            $exitStatus = $this->execLocalCMD ($cmd);
+        }
 		
 		# Deal with error messages
 		if ($exitStatus != 0) {
@@ -262,6 +295,25 @@ class videoTools {
                 </audio>";    
         return $html;
     }
+	
+	
+	/*
+	 * Executes a command on a binary in the index.php directory and returns an exit status
+	 *
+	 * @param str $cmd The command
+	 *
+	 * @return bool The exit status
+	 */
+	private function execLocalCMD ($cmd) {
+		
+		# Check if local binaries of ffmpeg and ffprobe are present
+		$ffmpegLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/ffmpeg';
+		if (file_exists($ffmpegLocation)) {
+			$cmd = './' . $cmd;
+			exec ($cmd, $output, $exitStatus);
+		}
+		return $exitStatus;
+	}
 	
 	
 	/*

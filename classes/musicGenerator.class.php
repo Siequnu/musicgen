@@ -101,6 +101,7 @@ class musicGenerator {
 		
 		# Set videoFilapath and outputFilepath paths
 		$this->videoTools = new videoTools;
+		$this->videoTools->videoID = $this->videoID;
 		if (!$this->videoTools->setDefaultPaths ($inputVideoLocation)) {
 			echo "Music generation encountered the following error: <pre>".htmlspecialchars($this->videoTools->getErrorMessage())."</pre></p>"; 
 		}
@@ -199,7 +200,7 @@ class musicGenerator {
 			echo "\n<p>The audio could not be merged with the video, due to the following error: <pre>".htmlspecialchars($this->videoTools->getErrorMessage())."</pre></p>";
 		} else {
 			# Echo HTML5 tag with video file
-			$pathToVideoFile = './output/finalvideo.mp4';
+			$pathToVideoFile = './output/' . $this->videoID . '-finalvideo.mp4';
 			echo $this->videoTools->getVideoHTMLTag ($pathToVideoFile);	
 		}
 	}
