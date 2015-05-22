@@ -23,10 +23,14 @@ class videoTools {
 	 */
 	public function setDefaultPaths ($inputVideoLocation) {
 		
+		# Create file and set permissions
+		$originalUmask = umask (0000);
 		$outputFolder = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/';
 		$outputFilepath = tempnam ($outputFolder, $this->videoID . '-');
+		umask ($originalUmask);
 		rename ($outputFilepath, $outputFilepath . '.mp4');
 		$outputFilepath = $outputFilepath . '.mp4';
+		chmod ($outputFilepath, 0775); 
 				
 		# Set path to original video file
 		if (!$this->setVideoFilepath ($inputVideoLocation)) {
