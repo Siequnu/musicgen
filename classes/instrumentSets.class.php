@@ -17,25 +17,39 @@ class instrumentSets {
             '0'   => 'piano',
             '1'   => 'marimba',
             '2'   => 'celesta',
-            '3'   => 'glockenspiel',
-            '4'   => 'smooth organ',
+            '3'   => 'vibraphone',
+            '4'   => 'plucked guitar',
+            '5'   => 'voice doo',
         );
         
         $this->padInstruments = array (
             '0'   => 'string ensemble',
             '1'   => 'smooth organ',
+            '2'   => 'vibraphone',
+            '3'   => 'drawbar organ',
+            '4'   => 'electro pad',
+            '5'   => 'funky chord pad',
+            '6'   => 'electro pad 2',
+            '7'   => 'dreamy pad',
+            '8'   => 'voice doo',
+
         );
         
         $this->accentInstruments = array (
             '0'   => 'glockenspiel',
             '1'   => 'vibraphone',
             '2'   => 'piano',
-            '3'   => 'celesta',
+            '3'   => 'plucked guitar',
+            '4'   => 'harp',
+            '5'   => 'dampened guitar',
         );
         
         $this->bassInstruments = array (
             '0'   => 'electro bass',
             '1'   => 'smooth organ',
+            '2'   => 'theater organ',
+            '3'   => 'voice doo',
+
         );
         
         $this->drumsetInstruments = array (
@@ -63,8 +77,39 @@ class instrumentSets {
             '017'   => 'clavi',
             '018'   => 'bright piano',
             '020'   => 'smooth organ',
-            '060'   => 'string ensemble',
-            '098'   => 'electro bass'   
+            '023'   => 'church organ',
+            '025'   => 'harmonium',
+            '027'   => 'harmonica',
+            '028'   => 'electric harpsichord',
+            '029'   => 'electric harpsichord 2',
+            '030'   => 'plucked guitar',
+            '031'   => 'plucked shamisen',
+            '032'   => 'dampened guitar',
+            '033'   => 'plucked harpsichord',
+            '034'   => 'theater organ',
+            '036'   => 'distort guitar',
+            '040'   => 'plucked ?',
+            '042'   => 'electro pad',
+            '043'   => 'electro pad 2',
+            '044'   => 'robot harpsichord',
+            '046'   => 'funky chord pad',
+            '049'   => 'dreamy pad',
+            '054'   => 'string ensemble',
+            '055'   => 'plucked strings',
+            '056'   => 'harp',
+            '057'   => 'timpani',
+            '058'   => '?',
+            '060'   => 'string ensemble 2',
+            '065'   => 'voice doo',
+            '068'   => 'harpsichord',
+            '069'   => 'harpsichord 2',
+            '070'   => 'brass',
+            '071'   => 'harder brass',
+            '072'   => 'tuba',
+            '073'   => 'nasal brass',
+            '074'   => 'brass ensemble',
+            '075'   => 'trumpet ensemble',
+            '098'   => 'electro bass',   
         );   
     }
     
