@@ -130,7 +130,7 @@ class midiGenerator {
 				
 				# Print On message for 4 notes 
 				foreach ($noteArray as $noteInNoteArray) {
-					$this->midiInstructions[] = "$this->midiTimeStamp On ch=$this->channel n=$noteInNoteArray v=50";
+					$this->midiInstructions[] = "$this->midiTimeStamp On ch=$this->channel n=$noteInNoteArray v=60";
 				}
 				
 				# Advance timestamp         
@@ -138,7 +138,7 @@ class midiGenerator {
 				
 				# Print Off message for same notes, time stamp ready for next set of On.        
 				foreach ($noteArray as $noteInNoteArray) {
-					$this->midiInstructions[] = "$this->midiTimeStamp Off ch=$this->channel n=$noteInNoteArray v=50";   
+					$this->midiInstructions[] = "$this->midiTimeStamp Off ch=$this->channel n=$noteInNoteArray v=60";   
 				}
 				unset ($noteArray);
 			}
@@ -169,13 +169,13 @@ class midiGenerator {
 						$positionInDisplacementArray++;
 						$note = $note + $noteDisplacement[$positionInDisplacementArray];
 
-						$this->midiInstructions[] = "$this->midiTimeStamp On ch=$this->channel n=$note v=60";
+						$this->midiInstructions[] = "$this->midiTimeStamp On ch=$this->channel n=$note v=50";
 						
 						# Advance timestamp         
 						$this->midiTimeStamp = $this->midiTimeStamp + $accentNoteLength;
 						
 						# Print Off message for same notes, time stamp ready for next set of On.        
-						$this->midiInstructions[] = "$this->midiTimeStamp Off ch=$this->channel n=$note v=60";
+						$this->midiInstructions[] = "$this->midiTimeStamp Off ch=$this->channel n=$note v=50";
 						
 					}
 				} else {
@@ -197,13 +197,13 @@ class midiGenerator {
 				}
 				
 				# Print on for random note from this chord to play on beat 1
-				$this->midiInstructions[] = "$this->midiTimeStamp On ch=$this->channel n=$noteArray[0] v=60";
+				$this->midiInstructions[] = "$this->midiTimeStamp On ch=$this->channel n=$noteArray[0] v=70";
 				
 				# Advance timestamp         
 				$this->midiTimeStamp = $this->midiTimeStamp + $lengthPerChord;
 				
 				# Print Off message for same notes, time stamp ready for next set of On.        
-				$this->midiInstructions[] = "$this->midiTimeStamp Off ch=$this->channel n=$noteArray[0] v=60";
+				$this->midiInstructions[] = "$this->midiTimeStamp Off ch=$this->channel n=$noteArray[0] v=70";
 	
 				unset ($noteArray);
 			}
