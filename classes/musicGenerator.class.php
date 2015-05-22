@@ -9,6 +9,10 @@ class musicGenerator {
 	public $sequenceOfHarmony;
 	public $soundtrackOnly;
 	public $midiTimeStamp;
+	public $finalVideoName;
+	public $inputVideoLocation;
+	public $pathToWAVFile;
+	public $midiFileLocation;
 	
     public function __construct () {
         include_once './classes/chordSequences.class.php';
@@ -54,8 +58,11 @@ class musicGenerator {
 			# Write tracks
 			$this->writeMIDITracks();	
 			
-			# Join audio and video
+			# Join audio and video and display content
 			$this->processAudioAndVideo();
+			
+			# Clean up intermediate files
+			$this->cleanUp();
 		}
     }
     
@@ -97,12 +104,12 @@ class musicGenerator {
 	private function setupVideoData () {
 		# Download and analyse video
 		$this->videoDownloader = new videoDownloader;
-		$inputVideoLocation = $this->videoDownloader->main($this->videoID);
+		$this->inputVideoLocation = $this->videoDownloader->main($this->videoID);
 		
 		# Set videoFilapath and outputFilepath paths
 		$this->videoTools = new videoTools;
 		$this->videoTools->videoID = $this->videoID;
-		if (!$this->videoTools->setDefaultPaths ($inputVideoLocation)) {
+		if (!$this->videoTools->setDefaultPaths ($this->inputVideoLocation)) {
 			echo "Music generation encountered the following error: <pre>".htmlspecialchars($this->videoTools->getErrorMessage())."</pre></p>"; 
 		}
 		
@@ -184,16 +191,16 @@ class musicGenerator {
 	 */
 	public function processAudioAndVideo () {
 		# Get file, convert to WAV and output HTML5
-		$audioFileLocation = $this->processMIDItoWAV();
+		$this->WAVFileLocation = $this->processMIDItoWAV();
 		
 		if ($this->soundtrackOnly === true) {
-			echo $this->getAudioHTMLTag ($audioFileLocation);
+			echo $this->getAudioHTMLTag ($this->WAVFileLocation);
 			return;
 		}
 		
 		# Merge audio and video
-		$pathToMusicFile = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/' . pathinfo ($audioFileLocation, PATHINFO_FILENAME) . '.wav';
-		$this->videoTools->setAudioFilepath ($pathToMusicFile);
+		$this->pathToWAVFile = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/' . pathinfo ($this->WAVFileLocation, PATHINFO_FILENAME) . '.wav';
+		$this->videoTools->setAudioFilepath ($this->pathToWAVFile);
 
 		# Merge generated audio with video and display in browser
 		if (!$this->videoTools->mergeAudioWithVideo()) {
@@ -219,18 +226,18 @@ class musicGenerator {
 	 */
 	private function processMIDItoWAV () {
 		# Get complete file location from MIDI Generator
-		$file = $this->midiGenerator->getMIDIFile ();
+		$this->midiFileLocation = $this->midiGenerator->getMIDIFile ();
 		# Deal with result messages
-		if (!$file) {
+		if (!$this->midiFileLocation) {
 			echo "\n<p>The MIDI file could not be created, due to the following error: <pre>".htmlspecialchars($this->midiGenerator->getErrorMessage())."</pre></p>";
 			return false;
 		} 
 		
 		# Convert MIDI file to WAV
-		$this->convertMIDIToWAV ($file);
+		$this->convertMIDIToWAV ($this->midiFileLocation);
 		
 		# Return location of generated WAV file
-		$location = '/musicgen/output/' . pathinfo ($file, PATHINFO_FILENAME) . '.wav';
+		$location = '/musicgen/output/' . pathinfo ($this->midiFileLocation, PATHINFO_FILENAME) . '.wav';
 		return $location;	
 	}
 	
@@ -414,6 +421,17 @@ class musicGenerator {
 		return $exitStatus;
 	}
     
+	public function cleanUp () {
+		
+		# Clean up output/midi file
+		unlink ($this->midiFileLocation);
+		# Clean up output/wav file
+		unlink ($this->pathToWAVFile);
+		# Clean up content/.mp4 file
+		unlink ($this->inputVideoLocation);
+		
+	}
+	
 }
 
 ?>
