@@ -5,6 +5,7 @@ class videoDownloader {
 	public $formSubmitted;
 	public $videoID;
     public $inputVideoLocation;
+	public $uniqueFileName;
 	
 	
     public function __construct () {
@@ -19,8 +20,11 @@ class videoDownloader {
 		# Assign passed on data (video ID)
 		$this->videoID = $videoID;
 	   
-	    # Set input video location
-        $this->inputVideoLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/content/' . $this->videoID . '-video.mp4';
+	    # Set unique input video location
+	    $dir = dirname ($_SERVER['SCRIPT_FILENAME']) . '/content/';
+        $this->inputVideoLocation = tempnam ($dir, $this->videoID . '-');
+		rename ($this->inputVideoLocation, $this->inputVideoLocation . '.mp4' );
+		$this->inputVideoLocation = $this->inputVideoLocation . '.mp4';
 		
 		# Build URL and path to target video file
 		$url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/lib/getvideo/getvideo.php?videoid=' . $this->videoID . '&format=18';	
@@ -44,8 +48,14 @@ class videoDownloader {
 			return false;
 		}
 		
+		# Get unique filename from path string
+		$filePathExploded = explode ('/', $this->inputVideoLocation);
+		end ($filePathExploded);
+		$endKey = key ($filePathExploded);
+		$this->uniqueFileName = $filePathExploded[$endKey];
+		
 		# Set local filepath for curl
-		$file_target = 'content/' . $this->videoID . '-video.mp4';
+		$file_target = 'content/' . $this->uniqueFileName;
 		
 		# Download file
 		$cmd = "curl -L -o {$file_target} '{$url}'";

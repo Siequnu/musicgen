@@ -199,8 +199,13 @@ class musicGenerator {
 		if (!$this->videoTools->mergeAudioWithVideo()) {
 			echo "\n<p>The audio could not be merged with the video, due to the following error: <pre>".htmlspecialchars($this->videoTools->getErrorMessage())."</pre></p>";
 		} else {
+			# Get video location from videoTools
+			$explodedFilepath = explode ('/', $this->videoTools->outputFilepath);
+			end ($explodedFilepath);
+			$finalVideoFilename = $explodedFilepath[key($explodedFilepath)];
+
 			# Echo HTML5 tag with video file
-			$pathToVideoFile = './output/' . $this->videoID . '-finalvideo.mp4';
+			$pathToVideoFile = './output/' . $finalVideoFilename;
 			echo $this->videoTools->getVideoHTMLTag ($pathToVideoFile);
 
 		}

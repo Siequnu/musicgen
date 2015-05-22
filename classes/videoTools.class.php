@@ -24,8 +24,10 @@ class videoTools {
 	public function setDefaultPaths ($inputVideoLocation) {
 		
 		$outputFolder = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/';
-		$outputFilepath = $outputFolder . $this->videoID . '-finalvideo.mp4';
-		
+		$outputFilepath = tempnam ($outputFolder, $this->videoID . '-');
+		rename ($outputFilepath, $outputFilepath . '.mp4');
+		$outputFilepath = $outputFilepath . '.mp4';
+				
 		# Set path to original video file
 		if (!$this->setVideoFilepath ($inputVideoLocation)) {
 			return false;
@@ -110,14 +112,16 @@ class videoTools {
 		
 		# Deal with error messages
 		if ($exitStatus != 0) {
-            $this->errorMessage = 'The video file could not be rendered, due to an error with ffmpeg.';
+            $this->errorMessage = 'The cut scenes could not be detected, due to a problem with ffprobe.';
             return false;
         }
 				
 		# Parse and return cut scene file
-		$sceneChangeFileLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/' . $this->videoID . '-scene-changes.txt';
+		$sceneChangeFileLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/';
+		$sceneChangeFileLocation = tempnam ($sceneChangeFileLocation, $this->videoID . '-');
+		rename ($sceneChangeFileLocation, $sceneChangeFileLocation . '-scene-changes.txt');
+		$sceneChangeFileLocation = $sceneChangeFileLocation . '-scene-changes.txt';
 		return $this->parseCutSceneFile($sceneChangeFileLocation);
-		
 	}
 	
 	/*
@@ -127,7 +131,6 @@ class videoTools {
 	 */
 	public function getVideoDuration () {
 		$cmd = "ffmpeg -i {$this->videoFilepath} 2>&1 | grep Duration | awk '{print $2}' | tr -d ,";
-		#echo $cmd;die;
 		$output = $this->shellExec ($cmd);
 		if (!$output) {
 			$output = $this->shellExecLocal($cmd);
@@ -230,7 +233,6 @@ class videoTools {
 	public function mergeAudioWithVideo () {
 		# Define command
         $cmd = "ffmpeg -y -i \"{$this->audioFilepath}\" -i \"{$this->videoFilepath}\" -preset ultrafast -strict experimental \"{$this->outputFilepath}\"";
-
 		$exitStatus = $this->execCmd ($cmd);
 	
 		# Handle errors
