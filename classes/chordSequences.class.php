@@ -15,7 +15,8 @@ class chordSequences {
             '4'   => array ('C', 'Eb', 'Ab', 'F'),
             '5'   => array ('C', 'am', 'C6', 'G'),
             '6'   => array ('C', 'am', 'F', 'G'),
-            '7'   => array ('C', 'Ab6', 'F64', 'F64')
+            '7'   => array ('C', 'Ab6', 'F64', 'F64'),
+            '8'   => array ('C', 'G', 'am', 'F',),
         );   
     }
     
