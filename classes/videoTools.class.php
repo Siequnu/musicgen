@@ -95,38 +95,7 @@ class videoTools {
 				<p>Refresh the page to generate a different soundtrack.";    
         return $html;
     }
-    
-	
-	/*
-	 * Generate an array with cutscene timings
-	 *
-	 * @return array Array with timings
-	 */
-    public function getCutScenes () {
-		# Define command to be run		
-		$cmd = "ffprobe -show_frames -of compact=p=0 -f lavfi \"movie={$this->videoFilepath},select=gt(scene\,0.3)\" > {$this->outputDirectory}{$this->videoID}-scene-changes.txt"; 
 
-		$exitStatus = $this->execCmd ($cmd);
-	
-		# Handle errors
-		if ($exitStatus != 0) {
-            # Try local version of ffprobe in folder
-            $exitStatus = $this->execLocalCMD ($cmd);
-        }
-		
-		# Deal with error messages
-		if ($exitStatus != 0) {
-            $this->errorMessage = 'The cut scenes could not be detected, due to a problem with ffprobe.';
-            return false;
-        }
-				
-		# Parse and return cut scene file
-		$sceneChangeFileLocation = dirname ($_SERVER['SCRIPT_FILENAME']) . '/output/';
-		$sceneChangeFileLocation = tempnam ($sceneChangeFileLocation, $this->videoID . '-');
-		rename ($sceneChangeFileLocation, $sceneChangeFileLocation . '-scene-changes.txt');
-		$sceneChangeFileLocation = $sceneChangeFileLocation . '-scene-changes.txt';
-		return $this->parseCutSceneFile($sceneChangeFileLocation);
-	}
 	
 	/*
 	 * Calculate duration of a video file
