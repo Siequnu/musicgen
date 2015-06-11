@@ -9,12 +9,13 @@ class midiGenerator {
 	public $timesRepeated;
 	public $channel;
 	public $globalTranspose = 0;
+	public $trackTempo = 650;
 	
 	
 	public function __construct () {
 		# Add Midi Header
 		$this->midiInstructions = array ();
-		$this->midiInstructions[] = 'MFile 0 1 650';	
+		$this->midiInstructions[] = "MFile 0 1 $this->trackTempo";	
 	}
 	
 	
