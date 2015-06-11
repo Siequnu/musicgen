@@ -424,12 +424,19 @@ class musicGenerator {
 	public function cleanUp () {
 		
 		# Clean up output/midi file
-		unlink ($this->midiFileLocation);
-		# Clean up output/wav file
-		unlink ($this->pathToWAVFile);
-		# Clean up content/.mp4 file
-		unlink ($this->inputVideoLocation);
+		if (is_file($this->midiFileLocation)) {
+			unlink ($this->midiFileLocation);
+		}
 		
+		# Clean up output/wav file
+		if (is_file($this->pathToWAVFile)) {
+			unlink ($this->pathToWAVFile);
+		}
+		
+		# Clean up content/.mp4 file
+		if (is_file($this->inputVideoLocation)) {
+			unlink ($this->inputVideoLocation);
+		}
 	}
 	
 }
