@@ -13,6 +13,7 @@ class musicGenerator {
 	public $inputVideoLocation;
 	public $pathToWAVFile;
 	public $midiFileLocation;
+	public $isRandomClapPattern;
 	
     public function __construct () {
         include_once './classes/chordSequences.class.php';
@@ -78,6 +79,9 @@ class musicGenerator {
 		# Set random transposition
 		$randomTransposition = mt_rand (1, 12);
 		$this->midiGenerator->globalTranspose = $randomTransposition;
+		
+		# Set default clap patter option
+		$this->midiGenerator->isRandomClapPattern = ($this->isRandomClapPattern == true ? true : false);
 		
 		# Get random instrument set
 		$instrumentSets = new instrumentSets;
@@ -257,10 +261,18 @@ class musicGenerator {
 		# Assign video ID
 		$this->videoID = $formData['url'];
 		
+		# Assign clap pattern
+		if ($formData['clappattern'] == 'Use default clap pattern') {
+			$this->isRandomClapPattern = false;
+		} else {
+			$this->isRandomClapPattern = true;
+		}
+	
 		# Check if only soundtrack generation
 		$this->soundtrackOnly = ($formData['radiobuttons'] === 'Generate soundtrack audio only' ? true : false);
 		
 		if ($this->soundtrackOnly === true) {
+			# Set number of verses
 			if (isSet($formData['verses'])) {
 				$this->numberOfVerses = $formData['verses'];
 			} else {
@@ -343,6 +355,29 @@ class musicGenerator {
         'default'				=> '4',
         'regexp'				=> '',
         ));
+		
+		 # Create a standard input box
+		$form->input (array (
+        'name'					=> 'bpm',
+        'title'					=> 'Track tempo',
+        'description'			=> 'Used if Generate soundtrack audio file only is selected.',
+        'output'				=> array (),
+        'size'					=> 3,
+        'maxlength'				=> '',
+        'default'				=> '',
+        'regexp'				=> '',
+        ));
+		
+		$form->radiobuttons (array (
+		'name'					=> 'clappattern',
+		'values'			    => array ('Use default clap pattern', 'Generate random clap pattern',),
+		'title'					=> 'Clap pattern',
+		'description'			=> '',
+		'output'				=> array (),
+		'required'				=> true,
+		'default'				=> 'Generate random clap pattern',
+		));
+		
         
 		# Process form and return result
         $result = $form->process ();

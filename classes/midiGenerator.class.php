@@ -10,6 +10,7 @@ class midiGenerator {
 	public $channel;
 	public $globalTranspose = 0;
 	public $trackTempo = 650;
+	public $isRandomClapPattern;
 	
 	
 	public function __construct () {
@@ -214,18 +215,37 @@ class midiGenerator {
 	private function writeClapEvent ($lengthPerChord, $instrumentID) {
 		# Define sublength
 		$subLength = $lengthPerChord / 8;
-
-		# Define clap pattern
-		$clapPatternArray = array (
-			'0'  => 'off',
-			'1'  => 'off',
-			'2'  => 'on',
-			'3'  => 'on',
-			'4'  => 'off',
-			'5'  => 'off',
-			'6'  => 'on',
-			'7'  => 'off',
-		);
+		
+		
+		# Generate clap pattern
+		
+		if ($this->isRandomClapPattern == true) {
+			# Initialise clap pattern array
+			$clapPatternArray = array();
+			
+			# Populate random clap pattern
+			for ($i = 0; $i < 8; $i++) {
+				# Get random number
+				$randomBinaryChoice = mt_rand(0, 1);
+				
+				# Assign to on or off
+				$randomOnOff = ($randomBinaryChoice === 0 ? 'off' : 'on');
+				
+				# Add to array
+				$clapPatternArray[] = $randomOnOff;
+			};
+		} else {
+			$clapPatternArray = array (
+				'0'  => 'off',
+				'1'  => 'off',
+				'2'  => 'on',
+				'3'  => 'on',
+				'4'  => 'off',
+				'5'  => 'off',
+				'6'  => 'on',
+				'7'  => 'off',
+			);
+		};
 		
 		for ($repeats = 1; $repeats <= $this->timesRepeated * 4; $repeats++) {
 			
