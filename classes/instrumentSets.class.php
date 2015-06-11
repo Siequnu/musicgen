@@ -1,18 +1,18 @@
 <?php
 
 class instrumentSets {
-    
+
     public function getErrorMessage() {return $this->errorMessage;}
-    
+
     public function __construct () {
-        
+
         $this->musicStyleTable = array (
             '0'   => array ('melody', 'pad', 'accent', 'bass', 'clap'),
             '1'   => array ('melody', 'pad', 'accent', 'bass', 'clap'),
             '2'   => array ('melody', 'pad'),
             '3'   => array ('drumset',),
         );
-        
+
         $this->melodyInstruments = array  (
             '0'   => 'piano',
             '1'   => 'marimba',
@@ -21,7 +21,7 @@ class instrumentSets {
             '4'   => 'plucked guitar',
             '5'   => 'voice doo',
         );
-        
+
         $this->padInstruments = array (
             '0'   => 'string ensemble',
             '1'   => 'smooth organ',
@@ -34,7 +34,7 @@ class instrumentSets {
             '8'   => 'voice doo',
 
         );
-        
+
         $this->accentInstruments = array (
             '0'   => 'glockenspiel',
             '1'   => 'vibraphone',
@@ -43,7 +43,7 @@ class instrumentSets {
             '4'   => 'harp',
             '5'   => 'dampened guitar',
         );
-        
+
         $this->bassInstruments = array (
             '0'   => 'electro bass',
             '1'   => 'smooth organ',
@@ -51,16 +51,16 @@ class instrumentSets {
             '3'   => 'voice doo',
 
         );
-        
+
         $this->drumsetInstruments = array (
             '0'   => 'analogue set',
             '1'   => 'techno set',
         );
-        
+
         $this->clapInstruments = array (
             '0'   => 'clap',
         );
-    
+
         $this->midiInstrumentID = array (
             '1'     => 'piano',
             '2'     => 'honkytonk',
@@ -109,11 +109,11 @@ class instrumentSets {
             '073'   => 'nasal brass',
             '074'   => 'brass ensemble',
             '075'   => 'trumpet ensemble',
-            '098'   => 'electro bass',   
-        );   
+            '098'   => 'electro bass',
+        );
     }
-    
-    
+
+
     public function getInstrumentation($musicStyleKey) {
         # Find what instruments are needed for music style
         if ($this->musicStyleTable[$musicStyleKey] === false) {
@@ -122,21 +122,21 @@ class instrumentSets {
         } else {
             $instrumentTypeArray = $this->musicStyleTable[$musicStyleKey];
         }
-        
+
         # Find a type of instrument for each part
         $instrumentArray = $this->getInstrumentForPart ($instrumentTypeArray);
-    
+
         return $instrumentArray;
     }
-    
-    
+
+
     public function getRandomEntryFromArray ($array) {
         $length = count ($array);
         $randomChoice = mt_rand (0, $length-1);
         return $array[$randomChoice];
     }
-    
-    
+
+
     public function getInstrumentForPart ($instrumentTypeArray) {
         foreach ($instrumentTypeArray as $instrumentType) {
             # Get random instrument style from corresponding array of choices
@@ -164,10 +164,10 @@ class instrumentSets {
                         echo '';
                         break;
                 }
-                
+
             }
         }
-        
+
         # Swap instruments for their ID's
         foreach ($instrumentArray as &$instrumentName) {
             $instrumentName = array_search($instrumentName, $this->midiInstrumentID);
@@ -177,5 +177,5 @@ class instrumentSets {
 
 
 }
-    
+
 ?>

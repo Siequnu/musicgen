@@ -4,7 +4,7 @@ class harmonyCatalog {
 
     # Construct an index
     public function __construct() {
-    
+
         $this->harmonyIndex = array(
             'C'        => array ('c', 'e', 'g', 'c'),
             'C763'     => array ('e', 'd', 'g', 'c'),
@@ -52,9 +52,9 @@ class harmonyCatalog {
             'Bb6'      => array ('d', 'f', 'bb', 'f'),
             'Bb'       => array ('bb', 'd', 'f', 'bb'),
             'bb'       => array ('bb', 'c#', 'f', 'bb'),
-            
+
         );
-        
+
         $this->keyboardLayout = array(
             '0'  => 'c',
             '1'  => 'c#',
@@ -105,9 +105,9 @@ class harmonyCatalog {
             '46' => 'bb',
             '47' => 'b',
             '48' => 'c',
-            
+
         );
-        
+
         $this->keyboardLayoutWithNoteNumbers = array(
             '0'  => 'c1',
             '1'  => 'c#1',
@@ -171,7 +171,7 @@ class harmonyCatalog {
             '59' => 'b5',
             '60' => 'c6',
         );
-    
+
     }
 }
 

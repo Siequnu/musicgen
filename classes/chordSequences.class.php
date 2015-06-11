@@ -1,12 +1,12 @@
 <?php
 
 class chordSequences {
-    
-    
+
+
     public function getErrorMessage() {return $this->errorMessage;}
-    
-    
-    public function __construct () { 
+
+
+    public function __construct () {
         $this->chordSequences = array  (
             '0'   => array ('C', 'em7', 'am', 'F'),
             '1'   => array ('C', 'C763', 'am', 'F'),
@@ -17,10 +17,10 @@ class chordSequences {
             '6'   => array ('C', 'am', 'F', 'G'),
             '7'   => array ('C', 'Ab6', 'F64', 'F64'),
             '8'   => array ('C', 'G', 'am', 'F',),
-        );   
+        );
     }
-    
-    
+
+
     public function getChordSequence($musicStyleKey) {
         # Get random chord sequence from array
         $possibilityCount = count ($this->chordSequences);
