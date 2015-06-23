@@ -241,7 +241,7 @@ class musicGenerator {
 		$this->convertMIDIToWAV ($this->midiFileLocation);
 
 		# Return location of generated WAV file
-		$location = '/musicgen/output/' . pathinfo ($this->midiFileLocation, PATHINFO_FILENAME) . '.wav';
+		$location = './output/' . pathinfo ($this->midiFileLocation, PATHINFO_FILENAME) . '.wav';
 		return $location;
 	}
 
